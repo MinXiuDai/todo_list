@@ -18,7 +18,7 @@ import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import { useStyles } from './styles'
 import ChangeHistoryIcon from '@material-ui/icons/ChangeHistory';
-import { map } from 'lodash'
+import { map ,isEmpty } from 'lodash'
 interface ITodoListProps {
     title : string,
     check : boolean
@@ -45,7 +45,7 @@ export const TodoList = () => {
                 return itemTerm.includes(searchTerm)
             })
                 setSearchTodo(fuzzyTodo)
-            if(searchValue !== '' ){
+            if( searchValue !== '' ){
                 setIsShow(true)
                 setSearchValue('')
             }
@@ -75,7 +75,7 @@ export const TodoList = () => {
         }
     }
 
-    const changeAndSave = ( item:any ,e:any) =>{
+    const changeAndSave = ( item:any ) =>{
         setContentShow(!contentShow)
         const newTodo = [...todo]
         item.title = inputValue
@@ -112,15 +112,24 @@ export const TodoList = () => {
                     >
                     <DialogContent>
                         <List>
-                            <DialogTitle id="alert-dialog-title">{"The Todo item found in the search !"}</DialogTitle>
+                            <DialogTitle id="alert-dialog-title">
                             {
-                                map(searchTodo,item=>{
-                                    return <ListItem style={{
+                            isEmpty(searchTodo)? 
+                            "Search content does not exist!":
+                            "The Todo item found in the search !"
+                            }
+                            </DialogTitle>
+                            {
+                                map(searchTodo,(item , index)=>{
+                                    return (
+                                        <ListItem 
+                                        style={{
                                         background:"#458790",
                                         color:"#9DD29F",
                                         borderRadius:4,
-                                        marginTop:3
-                                    }}>{item.title}</ListItem>
+                                        marginTop:3}}
+                                        >{item.title}</ListItem>
+                                    )
                                 })
                             }
                         </List>
@@ -142,8 +151,6 @@ export const TodoList = () => {
                     }}>
                     <span className={cls.spanTrueList}>Outstanding items :</span>
                     <List className={cls.checkTrue}>
-                    
-
                         { 
                             map ( todo ,(item , index) => {
                                 return(
@@ -166,7 +173,7 @@ export const TodoList = () => {
                                                 onChange={(e)=>{setInputValue(e.target.value)}}
                                             />
                                             </ListItemText>
-                                            <IconButton onClick={(e)=>changeAndSave(item,e)}> <ChangeHistoryIcon/> </IconButton>
+                                            <IconButton onClick={(e)=>changeAndSave(item)}> <ChangeHistoryIcon/> </IconButton>
                                             
                                             <IconButton onClick={()=>deleteTodo(index)}> <Delete/> </IconButton>
                                         </ListItem>
@@ -183,7 +190,6 @@ export const TodoList = () => {
                         }}>
                     <div className={cls.spanList}> Completed Items :</div> 
                     <List className={cls.checkFalse}>
-                        
                         {
                             map ( todo , (item , index) => {
                                 return(
